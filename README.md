@@ -18,8 +18,8 @@ A minimal online resume with view, edit, and export features.
 ## Development
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 Open `http://localhost:3000`.
@@ -31,6 +31,6 @@ Edit `types/cv.ts` to change data.
 ## Build
 
 ```bash
-npm run build
-npm start
+pnpm build
+pnpm start
 ```
