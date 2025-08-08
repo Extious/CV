@@ -3,12 +3,11 @@
 import React, { useState } from 'react';
 import { Lock, Eye, EyeOff } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import appConfig from '@/config/app.config.json';
 
 interface PasswordProtectionProps {
   onAuthenticated: () => void;
 }
-
-const EDIT_PASSWORD = 'zhaozhan'; // 编辑页面访问密码
 
 export default function PasswordProtection({ onAuthenticated }: PasswordProtectionProps) {
   const [password, setPassword] = useState('');
@@ -25,7 +24,7 @@ export default function PasswordProtection({ onAuthenticated }: PasswordProtecti
     // 模拟一个短暂的验证过程
     await new Promise(resolve => setTimeout(resolve, 500));
 
-    if (password === EDIT_PASSWORD) {
+    if (password === appConfig.editPassword) {
       // 认证成功，直接调用回调函数
       onAuthenticated();
     } else {
