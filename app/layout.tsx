@@ -4,7 +4,7 @@ import { LanguageProvider } from '@/contexts/LanguageContext'
 
 export const metadata: Metadata = {
   title: 'Extious - Online Resume',
-  description: 'Interactive online resume with multilingual support',
+  description: 'Interactive online resume with export features',
 }
 
 export default function RootLayout({
