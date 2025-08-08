@@ -2,7 +2,9 @@
   "name": "extious-cv",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@9.0.0",
   "scripts": {
+    "preinstall": "node -e \"if(!/pnpm/.test(process.env.npm_execpath||'')){console.error('Please use pnpm');process.exit(1)}\"",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
