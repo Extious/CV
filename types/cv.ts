@@ -6,6 +6,19 @@ export interface CVData {
     website: string;
     avatar: string;
   };
+  resumeTitle?: string;
+  resumeSubtitle?: string;
+  sectionTitles?: {
+    objective?: string;
+    education?: string;
+    honors?: string;
+    research?: string;
+    projects?: string;
+    skills?: string;
+    skillsTechnical?: string;
+    skillsLanguages?: string;
+    skillsActivities?: string;
+  };
   objective: string;
   education: {
     degree: string;
@@ -33,6 +46,8 @@ export interface CVData {
   };
 }
 
+import appConfig from '@/config/app.config.json';
+
 export const cvDataZh: CVData = {
   personalInfo: {
     name: "赵展",
@@ -41,6 +56,8 @@ export const cvDataZh: CVData = {
     website: "zhaozhan.site",
     avatar: "/myself.JPG"
   },
+  resumeTitle: appConfig.defaults.resumeTitle,
+  resumeSubtitle: appConfig.defaults.resumeSubtitle,
   objective: "香港科技大学博士生预录取批次",
   education: {
     degree: "电子信息工程专硕研究生（2+2）大三在读，大一大二在软件学院，大三转入电信学院，现任Dian团队算法学科组组长",
@@ -106,6 +123,8 @@ export const cvDataEn: CVData = {
     website: "zhaozhan.site",
     avatar: "/myself.JPG"
   },
+  resumeTitle: appConfig.defaults.resumeTitle,
+  resumeSubtitle: appConfig.defaults.resumeSubtitle,
   objective: "PhD Pre-admission at Hong Kong University of Science and Technology",
   education: {
     degree: "Master's in Electronic Information Engineering (2+2 Project-oriented Practice Program), Junior Year, transferred from Software Engineering to Electronic Information Engineering, currently serving as Algorithm Team Leader in Dian Team",

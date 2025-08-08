@@ -6,12 +6,15 @@ import { usePathname } from 'next/navigation';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Download, Globe } from 'lucide-react';
 
+import appConfig from '@/config/app.config.json';
+
 interface NavbarProps {
   onExportPDF?: () => void;
   onExportPNG?: () => void;
+  title?: string;
 }
-
-export default function Navbar({ onExportPDF, onExportPNG }: NavbarProps) {
+ 
+export default function Navbar({ onExportPDF, onExportPNG, title }: NavbarProps) {
   const pathname = usePathname();
   const { language, setLanguage, t } = useLanguage();
 
@@ -22,7 +25,7 @@ export default function Navbar({ onExportPDF, onExportPNG }: NavbarProps) {
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <div className="flex-shrink-0">
-              <h1 className="text-xl font-bold text-gray-800">Extious CV</h1>
+              <h1 className="text-xl font-bold text-gray-800">{title || appConfig.defaults.resumeTitle}</h1>
             </div>
 
             {/* Navigation Links - Only show on edit page */}

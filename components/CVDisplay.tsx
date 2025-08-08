@@ -15,6 +15,20 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
   ({ data, isEditing = false, onDataChange }, ref) => {
     const { t } = useLanguage();
 
+    const getSectionTitle = (key: keyof NonNullable<CVData['sectionTitles']> | 'objective' | 'education' | 'honors' | 'research' | 'projects' | 'skills') => {
+      const custom = data.sectionTitles?.[key as keyof NonNullable<CVData['sectionTitles']>];
+      if (custom && custom.trim().length > 0) return custom;
+      const map: Record<string, string> = {
+        objective: t('sections.objective'),
+        education: t('sections.education'),
+        honors: t('sections.honors'),
+        research: t('sections.research'),
+        projects: t('sections.projects'),
+        skills: t('sections.skills'),
+      };
+      return map[key as string] || '';
+    };
+
     const handleInputChange = (
       section: keyof CVData,
       field: string,
@@ -145,20 +159,38 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
       );
     };
 
+    const handleSectionTitleChange = (
+      key: keyof NonNullable<CVData['sectionTitles']>,
+      value: string
+    ) => {
+      if (!onDataChange) return;
+      const newData = { ...data };
+      newData.sectionTitles = { ...(newData.sectionTitles || {}), [key]: value };
+      onDataChange(newData);
+    };
+
     const SectionHeader = ({ 
-      title, 
+      sectionKey,
       onAddItem, 
       className = '' 
     }: {
-      title: string;
+      sectionKey: 'objective' | 'education' | 'honors' | 'research' | 'projects' | 'skills';
       onAddItem?: () => void;
       className?: string;
     }) => {
       return (
         <div className="flex items-center justify-between mb-3">
-          <h2 className={`text-xl font-bold text-blue-600 uppercase tracking-wide ${className}`}>
-            {title}
-          </h2>
+          {isEditing ? (
+            <EditableText
+              value={getSectionTitle(sectionKey)}
+              onChange={(value) => handleSectionTitleChange(sectionKey, value)}
+              className={`text-xl font-bold text-blue-600 uppercase tracking-wide ${className}`}
+            />
+          ) : (
+            <h2 className={`text-xl font-bold text-blue-600 uppercase tracking-wide ${className}`}>
+              {getSectionTitle(sectionKey)}
+            </h2>
+          )}
           {isEditing && onAddItem && (
             <button
               onClick={onAddItem}
@@ -200,13 +232,37 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
         <div 
           className="relative" 
           style={{ 
-            height: '120px', 
+            minHeight: '160px', 
             background: 'linear-gradient(135deg, #4F9CF9 0%, #3B82F6 100%)' 
           }}
         >
+          {/* Title and avatar area */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center pt-4 pb-10">
+            {isEditing ? (
+              <EditableText
+                value={data.resumeTitle || ''}
+                onChange={(value) => handleInputChange('resumeTitle' as any, '', value)}
+                className="text-white text-2xl font-bold mb-1"
+              />
+            ) : (
+              <h1 className="text-white text-2xl font-bold mb-1">{data.resumeTitle}</h1>
+            )}
+            {isEditing ? (
+              <EditableText
+                value={data.resumeSubtitle || ''}
+                onChange={(value) => handleInputChange('resumeSubtitle' as any, '', value)}
+                className="text-blue-50 text-sm"
+              />
+            ) : (
+              !!data.resumeSubtitle && (
+                <div className="text-blue-50 text-sm">{data.resumeSubtitle}</div>
+              )
+            )}
+          </div>
+
           {/* Avatar positioned in the center bottom of header */}
           <div 
-            className="absolute left-1/2 transform -translate-x-1/2" 
+            className="absolute left-1/2 transform -translate-x-1/2"
             style={{ bottom: '-40px' }}
           >
             <div 
@@ -266,7 +322,7 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
             <div className="flex items-start mb-3">
               <div className="w-1 bg-blue-500 mr-4 flex-shrink-0" style={{ minHeight: '24px' }}></div>
               <div className="flex-1">
-                <SectionHeader title={t('sections.objective')} />
+                <SectionHeader sectionKey="objective" />
                 <EditableText
                   value={data.objective}
                   onChange={(value) => handleInputChange('objective', '', value)}
@@ -282,7 +338,7 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
               <div className="w-1 bg-blue-500 mr-4 flex-shrink-0" style={{ minHeight: '24px' }}></div>
               <div className="flex-1">
                 <SectionHeader 
-                  title={t('sections.education')} 
+                  sectionKey="education"
                   onAddItem={addEducationDetail}
                 />
                 <div className="space-y-2">
@@ -329,7 +385,7 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
               <div className="w-1 bg-blue-500 mr-4 flex-shrink-0" style={{ minHeight: '24px' }}></div>
               <div className="flex-1">
                 <SectionHeader 
-                  title={t('sections.honors')} 
+                  sectionKey="honors"
                   onAddItem={() => addItem('honors')}
                 />
                 {data.honors.map((honor, index) => (
@@ -357,7 +413,7 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
               <div className="w-1 bg-blue-500 mr-4 flex-shrink-0" style={{ minHeight: '24px' }}></div>
               <div className="flex-1">
                 <SectionHeader 
-                  title={t('sections.research')} 
+                  sectionKey="research"
                   onAddItem={() => addItem('research')}
                 />
                 {data.research.map((item, index) => (
@@ -391,7 +447,7 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
               <div className="w-1 bg-blue-500 mr-4 flex-shrink-0" style={{ minHeight: '24px' }}></div>
               <div className="flex-1">
                 <SectionHeader 
-                  title={t('sections.projects')} 
+                  sectionKey="projects"
                   onAddItem={() => addItem('projects')}
                 />
                 {data.projects.map((project, index) => (
@@ -422,7 +478,7 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
             <div className="flex items-start mb-3">
               <div className="w-1 bg-blue-500 mr-4 flex-shrink-0" style={{ minHeight: '24px' }}></div>
               <div className="flex-1">
-                <h2 className="text-xl font-bold text-blue-600 mb-3 uppercase tracking-wide">{t('sections.skills')}</h2>
+                <SectionHeader sectionKey="skills" />
                 <div className="space-y-2">
                   <div className="flex items-start">
                     <span className="font-bold text-gray-800 text-sm mr-1">•</span>
