@@ -2,6 +2,7 @@
 
 import React, { forwardRef } from 'react';
 import { CVData } from '@/types/cv';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface CVDisplayProps {
   data: CVData;
@@ -11,6 +12,8 @@ interface CVDisplayProps {
 
 const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
   ({ data, isEditing = false, onDataChange }, ref) => {
+    const { t } = useLanguage();
+
     const setField = (updater: (draft: CVData) => void) => {
       if (!onDataChange) return;
       const next = { ...data } as CVData;
@@ -85,7 +88,7 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
 
           {/* Summary */}
           <section className="mb-4">
-            <h2 className="text-base font-semibold text-blue-600 tracking-wide mb-1">Summary</h2>
+            <h2 className="text-base font-semibold text-blue-600 tracking-wide mb-1">{t('sections.summary')}</h2>
             <Input
               value={data.summary}
               onChange={(v) => setField((d) => { d.summary = v; })}
@@ -96,7 +99,7 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
 
           {/* Education */}
           <section className="mb-4">
-            <h2 className="text-base font-semibold text-blue-600 tracking-wide mb-1">Education</h2>
+            <h2 className="text-base font-semibold text-blue-600 tracking-wide mb-1">{t('sections.education')}</h2>
             <div className="space-y-1.5">
               <Input
                 value={data.education.school}
@@ -150,7 +153,7 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
 
           {/* Honors */}
           <section className="mb-4">
-            <h2 className="text-base font-semibold text-blue-600 tracking-wide mb-1">Honors</h2>
+            <h2 className="text-base font-semibold text-blue-600 tracking-wide mb-1">{t('sections.honors')}</h2>
             {data.honors.map((h, i) => (
               <div key={i} className="flex items-start mb-1.5">
                 <Input
@@ -185,7 +188,7 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
 
           {/* Research */}
           <section className="mb-4">
-            <h2 className="text-base font-semibold text-blue-600 tracking-wide mb-1">Research</h2>
+            <h2 className="text-base font-semibold text-blue-600 tracking-wide mb-1">{t('sections.research')}</h2>
             {data.research.map((r, i) => (
               <div key={i} className="mb-2">
                 <Input
@@ -221,7 +224,7 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
 
           {/* Projects */}
           <section className="mb-4">
-            <h2 className="text-base font-semibold text-blue-600 tracking-wide mb-1">Projects</h2>
+            <h2 className="text-base font-semibold text-blue-600 tracking-wide mb-1">{t('sections.projects')}</h2>
             {data.projects.map((p, i) => (
               <div key={i} className="mb-2">
                 <Input
@@ -257,7 +260,7 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
 
           {/* Skills */}
           <section className="mb-2">
-            <h2 className="text-base font-semibold text-blue-600 tracking-wide mb-1">Skills</h2>
+            <h2 className="text-base font-semibold text-blue-600 tracking-wide mb-1">{t('sections.skills')}</h2>
             {(['technical', 'languages', 'activities'] as const).map((cat) => (
               <div key={cat} className="mb-1.5">
                 <div className="font-semibold text-gray-800 text-sm mb-0.5 capitalize">{cat}</div>

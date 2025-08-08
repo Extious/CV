@@ -1,14 +1,18 @@
 'use client';
 
 import React, { useRef } from 'react';
-import { cvData } from '@/types/cv';
+import { cvDataEn, cvDataZh } from '@/types/cv';
+import { useLanguage } from '@/contexts/LanguageContext';
 import CVDisplay from '@/components/CVDisplay';
 import Navbar from '@/components/Navbar';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
 export default function HomePage() {
+  const { language } = useLanguage();
   const cvRef = useRef<HTMLDivElement>(null);
+
+  const data = language === 'zh' ? cvDataZh : cvDataEn;
 
   const exportToPDF = async () => {
     if (!cvRef.current) return;
@@ -38,7 +42,7 @@ export default function HomePage() {
       <Navbar onExportPDF={exportToPDF} onExportPNG={exportToPNG} />
       <main className="py-4">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
-          <CVDisplay ref={cvRef} data={cvData} isEditing={false} />
+          <CVDisplay ref={cvRef} data={data} isEditing={false} />
         </div>
       </main>
     </div>

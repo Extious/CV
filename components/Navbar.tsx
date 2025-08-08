@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface NavbarProps {
   onExportPDF?: () => void;
@@ -11,6 +12,7 @@ interface NavbarProps {
  
 export default function Navbar({ onExportPDF, onExportPNG }: NavbarProps) {
   const pathname = usePathname();
+  const { language, setLanguage, t } = useLanguage();
 
   return (
     <nav className="bg-white border-b border-gray-200 print:hidden">
@@ -24,13 +26,19 @@ export default function Navbar({ onExportPDF, onExportPNG }: NavbarProps) {
             {pathname === '/' && (
               <>
                 {onExportPDF && (
-                  <button onClick={onExportPDF} className="px-2.5 py-1.5 text-xs font-medium text-white bg-red-600 rounded-md">Export PDF</button>
+                  <button onClick={onExportPDF} className="px-2.5 py-1.5 text-xs font-medium text-white bg-red-600 rounded-md">{t('actions.exportPDF')}</button>
                 )}
                 {onExportPNG && (
-                  <button onClick={onExportPNG} className="px-2.5 py-1.5 text-xs font-medium text-white bg-green-600 rounded-md">Export PNG</button>
+                  <button onClick={onExportPNG} className="px-2.5 py-1.5 text-xs font-medium text-white bg-green-600 rounded-md">{t('actions.exportPNG')}</button>
                 )}
               </>
             )}
+            <button
+              onClick={() => setLanguage(language === 'zh' ? 'en' : 'zh')}
+              className="px-2.5 py-1.5 text-xs font-medium text-gray-600 bg-gray-100 rounded-md"
+            >
+              {language === 'zh' ? 'English' : '中文'}
+            </button>
           </div>
         </div>
       </div>

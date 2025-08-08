@@ -1,21 +1,24 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
-import { CVData, cvData as initialData } from '@/types/cv';
+import React, { useState, useRef, useMemo } from 'react';
+import { CVData, cvDataEn, cvDataZh } from '@/types/cv';
+import { useLanguage } from '@/contexts/LanguageContext';
 import CVDisplay from '@/components/CVDisplay';
 import Navbar from '@/components/Navbar';
 
 export default function EditPage() {
-  const [data, setData] = useState<CVData>(initialData);
+  const { language } = useLanguage();
+  const initial = useMemo<CVData>(() => (language === 'zh' ? cvDataZh : cvDataEn), [language]);
+  const [data, setData] = useState<CVData>(initial);
   const cvRef = useRef<HTMLDivElement>(null);
 
   const handleSave = () => {
-    localStorage.setItem('cv-data', JSON.stringify(data));
+    localStorage.setItem(`cv-data-${language}`, JSON.stringify(data));
     alert('Saved');
   };
 
   const handleReset = () => {
-    setData(initialData);
+    setData(initial);
   };
 
   return (

@@ -32,7 +32,7 @@ export interface CVData {
   };
 }
 
-export const cvData: CVData = {
+export const cvDataEn: CVData = {
   personalInfo: {
     name: "Zhao Zhan",
     phone: "15225929727",
@@ -80,5 +80,56 @@ export const cvData: CVData = {
     technical: ["Golang", "Python"],
     languages: ["English (CET-6)"],
     activities: ["Personal Website: zhaozhan.site"]
+  }
+};
+
+export const cvDataZh: CVData = {
+  personalInfo: {
+    name: "赵展",
+    phone: "15225929727",
+    email: "zhaozhan@hust.edu.cn",
+    website: "zhaozhan.site"
+  },
+  summary: "电子信息工程方向研究生，具备良好的软件与通信系统背景。",
+  education: {
+    degree: "电子信息工程（2+2 项目）",
+    school: "华中科技大学",
+    period: "2022 - 至今",
+    gpa: "总成绩绩点：8.32",
+    details: [
+      "高分课程：",
+      "C 程序设计：91，网络系统：90",
+      "计算机网络：94，通信原理：89"
+    ]
+  },
+  honors: [
+    { title: "中国计算机设计大赛中南赛区二等奖", year: "2024" }
+  ],
+  research: [
+    {
+      title: "车联网应用设计",
+      description: "设计分布式架构的监听与救援系统，提升可靠性与可扩展性。"
+    },
+    {
+      title: "Golang 实时通信服务",
+      description: "基于 WebSocket 实现实时通信，使用 MySQL 与 Redis 做持久化。"
+    },
+    {
+      title: "OvarianGPT 智能诊断",
+      description: "基于 RAG 与 LangChain 的医疗助手，辅助临床决策。"
+    },
+    {
+      title: "卵巢癌生存期预后预测",
+      description: "构建机器学习预测模型，成果发表于 IEEE Healthcom。"
+    }
+  ],
+  projects: [
+    { title: "C 语言磁导航模拟器", description: "基于 C 语言开发交互式控制台游戏。" },
+    { title: "Web 管理系统", description: "使用 Rust 与 Go 开发分布式 KV 存储 tmykv。" }
+  ],
+  skills: {
+    technical: ["Golang", "Python"],
+    languages: ["英语（CET-6）"],
+    activities: ["个人网站：zhaozhan.site"]
   }
 };
