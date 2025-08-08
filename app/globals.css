@@ -21,7 +21,6 @@ a {
 * {
   box-sizing: border-box;
 }
-<<<<<<< Current (Your changes)
 
 @media (prefers-color-scheme: dark) {
   html {
@@ -76,5 +75,3 @@ a {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-=======
->>>>>>> Incoming (Background Agent changes)
