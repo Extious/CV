@@ -25,6 +25,9 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
         research: t('sections.research'),
         projects: t('sections.projects'),
         skills: t('sections.skills'),
+        skillsTechnical: t('skills.technical'),
+        skillsLanguages: t('skills.languages'),
+        skillsActivities: t('skills.activities'),
       };
       return map[key as string] || '';
     };
@@ -484,7 +487,15 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
                     <span className="font-bold text-gray-800 text-sm mr-1">•</span>
                     <div className="flex-1">
                       <div className="flex items-center mb-1">
-                        <span className="font-bold text-gray-800 text-sm mr-2">{t('skills.technical')}：</span>
+                        {isEditing ? (
+                          <EditableText
+                            value={getSectionTitle('skillsTechnical')}
+                            onChange={(value) => handleSectionTitleChange('skillsTechnical', value)}
+                            className="font-bold text-gray-800 text-sm mr-2"
+                          />
+                        ) : (
+                          <span className="font-bold text-gray-800 text-sm mr-2">{getSectionTitle('skillsTechnical')}</span>
+                        )}
                         {isEditing && (
                           <button
                             onClick={() => addSkillItem('technical')}
@@ -515,7 +526,15 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
                     <span className="font-bold text-gray-800 text-sm mr-1">•</span>
                     <div className="flex-1">
                       <div className="flex items-center mb-1">
-                        <span className="font-bold text-gray-800 text-sm mr-2">{t('skills.languages')}：</span>
+                        {isEditing ? (
+                          <EditableText
+                            value={getSectionTitle('skillsLanguages')}
+                            onChange={(value) => handleSectionTitleChange('skillsLanguages', value)}
+                            className="font-bold text-gray-800 text-sm mr-2"
+                          />
+                        ) : (
+                          <span className="font-bold text-gray-800 text-sm mr-2">{getSectionTitle('skillsLanguages')}</span>
+                        )}
                         {isEditing && (
                           <button
                             onClick={() => addSkillItem('languages')}
@@ -546,7 +565,15 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
                     <span className="font-bold text-gray-800 text-sm mr-1">•</span>
                     <div className="flex-1">
                       <div className="flex items-center mb-1">
-                        <span className="font-bold text-gray-800 text-sm mr-2">{t('skills.activities')}：</span>
+                        {isEditing ? (
+                          <EditableText
+                            value={getSectionTitle('skillsActivities')}
+                            onChange={(value) => handleSectionTitleChange('skillsActivities', value)}
+                            className="font-bold text-gray-800 text-sm mr-2"
+                          />
+                        ) : (
+                          <span className="font-bold text-gray-800 text-sm mr-2">{getSectionTitle('skillsActivities')}</span>
+                        )}
                         {isEditing && (
                           <button
                             onClick={() => addSkillItem('activities')}
