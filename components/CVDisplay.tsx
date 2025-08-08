@@ -2,8 +2,6 @@
 
 import React, { forwardRef } from 'react';
 import { CVData } from '@/types/cv';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { Plus, Trash2 } from 'lucide-react';
 
 interface CVDisplayProps {
   data: CVData;
@@ -13,143 +11,34 @@ interface CVDisplayProps {
 
 const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
   ({ data, isEditing = false, onDataChange }, ref) => {
-    const { t } = useLanguage();
-
-    const getSectionTitle = (key: keyof NonNullable<CVData['sectionTitles']> | 'objective' | 'education' | 'honors' | 'research' | 'projects' | 'skills') => {
-      const custom = data.sectionTitles?.[key as keyof NonNullable<CVData['sectionTitles']>];
-      if (custom && custom.trim().length > 0) return custom;
-      const map: Record<string, string> = {
-        objective: t('sections.objective'),
-        education: t('sections.education'),
-        honors: t('sections.honors'),
-        research: t('sections.research'),
-        projects: t('sections.projects'),
-        skills: t('sections.skills'),
-        skillsTechnical: t('skills.technical'),
-        skillsLanguages: t('skills.languages'),
-        skillsActivities: t('skills.activities'),
-      };
-      return map[key as string] || '';
-    };
-
-    const handleInputChange = (
-      section: keyof CVData,
-      field: string,
-      value: any,
-      index?: number
-    ) => {
+    const setField = (updater: (draft: CVData) => void) => {
       if (!onDataChange) return;
-
-      const newData = { ...data };
-      
-      if (section === 'personalInfo') {
-        (newData[section] as any)[field] = value;
-      } else if (section === 'honors' || section === 'research' || section === 'projects') {
-        if (index !== undefined) {
-          (newData[section] as any)[index][field] = value;
-        }
-      } else if (section === 'education') {
-        if (field === 'details' && index !== undefined) {
-          (newData[section] as any)[field][index] = value;
-        } else {
-          (newData[section] as any)[field] = value;
-        }
-      } else if (section === 'skills') {
-        if (index !== undefined) {
-          (newData[section] as any)[field][index] = value;
-        }
-      } else {
-        (newData as any)[section] = value;
-      }
-      
-      onDataChange(newData);
+      const next = { ...data } as CVData;
+      updater(next);
+      onDataChange(next);
     };
 
-    const addItem = (section: 'honors' | 'research' | 'projects' | 'skills', skillType?: string) => {
-      if (!onDataChange) return;
-
-      const newData = { ...data };
-      
-      if (section === 'honors') {
-        newData.honors.push({ title: '新荣誉奖项', year: '2024' });
-      } else if (section === 'research') {
-        newData.research.push({ title: '新科研项目', description: '项目描述' });
-      } else if (section === 'projects') {
-        newData.projects.push({ title: '新项目', description: '项目描述' });
-      } else if (section === 'skills' && skillType) {
-        (newData.skills as any)[skillType].push('新技能');
-      }
-      
-      onDataChange(newData);
-    };
-
-    const removeItem = (section: 'honors' | 'research' | 'projects' | 'skills', index: number, skillType?: string) => {
-      if (!onDataChange) return;
-
-      const newData = { ...data };
-      
-      if (section === 'skills' && skillType) {
-        (newData.skills as any)[skillType].splice(index, 1);
-      } else {
-        (newData[section] as any).splice(index, 1);
-      }
-      
-      onDataChange(newData);
-    };
-
-    const addEducationDetail = () => {
-      if (!onDataChange) return;
-
-      const newData = { ...data };
-      newData.education.details.push('新的教育详情');
-      onDataChange(newData);
-    };
-
-  const removeEducationDetail = (educationIndex: number, detailIndex: number) => {
-    const newData = { ...data }
-    if (newData.education.details) {
-      newData.education.details = newData.education.details.filter((_, j) => j !== detailIndex)
-      onDataChange?.(newData)
-    }
-  }
-
-  // 为技能部分添加专门的函数
-  const addSkillItem = (category: 'technical' | 'languages' | 'activities') => {
-    const newData = { ...data }
-    newData.skills[category] = [...newData.skills[category], '']
-    onDataChange?.(newData)
-  }
-
-  const removeSkillItem = (category: 'technical' | 'languages' | 'activities', index: number) => {
-    const newData = { ...data }
-    newData.skills[category] = newData.skills[category].filter((_, i) => i !== index)
-    onDataChange?.(newData)
-  }
-
-  const EditableText = ({
-      value, 
-      onChange, 
-      className = '', 
-      multiline = false 
+    const Input = ({
+      value,
+      onChange,
+      className = '',
+      multiline = false,
     }: {
       value: string;
-      onChange: (value: string) => void;
+      onChange: (v: string) => void;
       className?: string;
       multiline?: boolean;
     }) => {
-      if (!isEditing) {
-        return multiline ? (
-          <div className={className} style={{ whiteSpace: 'pre-wrap' }}>{value}</div>
-        ) : (
-          <span className={className}>{value}</span>
-        );
-      }
-
+      if (!isEditing) return multiline ? (
+        <div className={className} style={{ whiteSpace: 'pre-wrap' }}>{value}</div>
+      ) : (
+        <span className={className}>{value}</span>
+      );
       return multiline ? (
         <textarea
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className={`${className} border border-gray-300 rounded px-2 py-1 w-full`}
+          className={`border border-gray-300 rounded px-2 py-1 w-full ${className}`}
           rows={3}
         />
       ) : (
@@ -157,399 +46,252 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
           type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className={`${className} border border-gray-300 rounded px-2 py-1`}
+          className={`border border-gray-300 rounded px-2 py-1 ${className}`}
         />
       );
     };
 
-    const handleSectionTitleChange = (
-      key: keyof NonNullable<CVData['sectionTitles']>,
-      value: string
-    ) => {
-      if (!onDataChange) return;
-      const newData = { ...data };
-      newData.sectionTitles = { ...(newData.sectionTitles || {}), [key]: value };
-      onDataChange(newData);
-    };
-
-    const SectionHeader = ({ 
-      sectionKey,
-      onAddItem, 
-      className = '' 
-    }: {
-      sectionKey: 'objective' | 'education' | 'honors' | 'research' | 'projects' | 'skills';
-      onAddItem?: () => void;
-      className?: string;
-    }) => {
-      return (
-        <div className="flex items-center justify-between mb-2">
-          {isEditing ? (
-            <EditableText
-              value={getSectionTitle(sectionKey)}
-              onChange={(value) => handleSectionTitleChange(sectionKey, value)}
-              className={`text-base font-semibold text-blue-600 tracking-wide ${className}`}
-            />
-          ) : (
-            <h2 className={`text-base font-semibold text-blue-600 tracking-wide ${className}`}>
-              {getSectionTitle(sectionKey)}
-            </h2>
-          )}
-          {isEditing && onAddItem && (
-            <button
-              onClick={onAddItem}
-              className="flex items-center text-xs text-blue-600 hover:text-blue-800 border border-blue-600 hover:border-blue-800 rounded px-1.5 py-0.5 transition-colors"
-            >
-              <Plus className="w-3 h-3 mr-1" />
-              添加
-            </button>
-          )}
-        </div>
-      );
-    };
-
-    const DeleteButton = ({ onClick }: { onClick: () => void }) => {
-      if (!isEditing) return null;
-      
-      return (
-        <button
-          onClick={onClick}
-          className="text-red-500 hover:text-red-700 ml-2 p-1 transition-colors"
-          title="删除"
-        >
-          <Trash2 className="w-4 h-4" />
-        </button>
-      );
-    };
-
     return (
-      <div 
-        ref={ref} 
-        className="w-full max-w-[800px] mx-auto bg-white shadow-lg print:shadow-none" 
-        style={{ 
-          fontFamily: 'Arial, sans-serif', 
-          fontSize: '13px',
-          lineHeight: '1.4'
-        }}
+      <div
+        ref={ref}
+        className="w-full max-w-[800px] mx-auto bg-white shadow print:shadow-none"
+        style={{ fontFamily: 'Inter, Arial, sans-serif', fontSize: '13px', lineHeight: '1.5' }}
       >
-        {/* Main content */}
-        <div className="px-4 py-4">
-          {/* Name and Contact */}
+        <div className="p-6">
+          {/* Header */}
           <div className="text-center mb-4">
-            <EditableText
+            <Input
               value={data.personalInfo.name}
-              onChange={(value) => handleInputChange('personalInfo', 'name', value)}
-              className="text-xl font-bold text-gray-800 mb-2 block"
+              onChange={(v) => setField((d) => { d.personalInfo.name = v; })}
+              className="text-xl font-bold text-gray-800 mb-1 block"
             />
-            <div className="text-sm text-gray-600 space-y-0.5">
-              <div className="flex justify-center items-center space-x-1">
-                <span>📞</span>
-                <EditableText
-                  value={data.personalInfo.phone}
-                  onChange={(value) => handleInputChange('personalInfo', 'phone', value)}
-                  className=""
-                />
-                <span className="mx-2">|</span>
-                <span>✉️</span>
-                <EditableText
-                  value={data.personalInfo.email}
-                  onChange={(value) => handleInputChange('personalInfo', 'email', value)}
-                />
-              </div>
-              <div className="flex justify-center items-center space-x-1">
-                <span>🌐</span>
-                <EditableText
-                  value={data.personalInfo.website}
-                  onChange={(value) => handleInputChange('personalInfo', 'website', value)}
-                  className=""
-                />
-              </div>
+            <div className="text-sm text-gray-600 space-x-2">
+              <Input
+                value={data.personalInfo.phone}
+                onChange={(v) => setField((d) => { d.personalInfo.phone = v; })}
+              />
+              <span className="mx-1">|</span>
+              <Input
+                value={data.personalInfo.email}
+                onChange={(v) => setField((d) => { d.personalInfo.email = v; })}
+              />
+              <span className="mx-1">|</span>
+              <Input
+                value={data.personalInfo.website}
+                onChange={(v) => setField((d) => { d.personalInfo.website = v; })}
+              />
             </div>
           </div>
 
-          {/* Objective */}
-          <div className="mb-4">
-            <div className="flex items-start mb-2">
-              <div className="w-1 bg-blue-500 mr-3 flex-shrink-0" style={{ minHeight: '18px' }}></div>
-              <div className="flex-1">
-                <SectionHeader sectionKey="objective" />
-                <EditableText
-                  value={data.objective}
-                  onChange={(value) => handleInputChange('objective', '', value)}
-                  className="text-gray-700 text-sm leading-snug"
-                />
-              </div>
-            </div>
-          </div>
+          {/* Summary */}
+          <section className="mb-4">
+            <h2 className="text-base font-semibold text-blue-600 tracking-wide mb-1">Summary</h2>
+            <Input
+              value={data.summary}
+              onChange={(v) => setField((d) => { d.summary = v; })}
+              className="text-gray-700"
+              multiline
+            />
+          </section>
 
           {/* Education */}
-          <div className="mb-4">
-            <div className="flex items-start mb-2">
-              <div className="w-1 bg-blue-500 mr-3 flex-shrink-0" style={{ minHeight: '18px' }}></div>
-              <div className="flex-1">
-                <SectionHeader 
-                  sectionKey="education"
-                  onAddItem={addEducationDetail}
-                />
-                <div className="space-y-1.5">
-                  <EditableText
-                    value={data.education.school}
-                    onChange={(value) => handleInputChange('education', 'school', value)}
-                    className="font-semibold text-gray-800 block text-sm"
-                  />
-                  <EditableText
-                    value={data.education.degree}
-                    onChange={(value) => handleInputChange('education', 'degree', value)}
-                    className="text-gray-700 block text-sm leading-snug"
-                  />
-                  <EditableText
-                    value={data.education.period}
-                    onChange={(value) => handleInputChange('education', 'period', value)}
-                    className="text-gray-600 text-xs block leading-snug"
-                  />
-                  <EditableText
-                    value={data.education.gpa}
-                    onChange={(value) => handleInputChange('education', 'gpa', value)}
-                    className="text-gray-700 block text-sm font-medium"
-                  />
-                  <div className="space-y-1 mt-1">
-                    {data.education.details.map((detail, index) => (
-                      <div key={index} className="flex items-start">
-                        <EditableText
-                          value={detail}
-                          onChange={(value) => handleInputChange('education', 'details', value, index)}
-                          className="text-gray-600 text-sm block leading-snug pl-2 flex-1"
-                        />
-                        <DeleteButton onClick={() => removeEducationDetail(0, index)} />
-                      </div>
-                    ))}
+          <section className="mb-4">
+            <h2 className="text-base font-semibold text-blue-600 tracking-wide mb-1">Education</h2>
+            <div className="space-y-1.5">
+              <Input
+                value={data.education.school}
+                onChange={(v) => setField((d) => { d.education.school = v; })}
+                className="font-semibold text-gray-800 block text-sm"
+              />
+              <Input
+                value={data.education.degree}
+                onChange={(v) => setField((d) => { d.education.degree = v; })}
+                className="text-gray-700 block text-sm"
+              />
+              <Input
+                value={data.education.period}
+                onChange={(v) => setField((d) => { d.education.period = v; })}
+                className="text-gray-600 text-xs block"
+              />
+              <Input
+                value={data.education.gpa}
+                onChange={(v) => setField((d) => { d.education.gpa = v; })}
+                className="text-gray-700 block text-sm"
+              />
+              <div className="space-y-1 mt-1">
+                {data.education.details.map((detail, i) => (
+                  <div key={i} className="flex items-start">
+                    <Input
+                      value={detail}
+                      onChange={(v) => setField((d) => { d.education.details[i] = v; })}
+                      className="text-gray-600 text-sm block flex-1"
+                    />
+                    {isEditing && (
+                      <button
+                        onClick={() => setField((d) => { d.education.details = d.education.details.filter((_, j) => j !== i); })}
+                        className="ml-2 text-xs text-red-600"
+                      >
+                        Remove
+                      </button>
+                    )}
                   </div>
-                </div>
+                ))}
+                {isEditing && (
+                  <button
+                    onClick={() => setField((d) => { d.education.details = [...d.education.details, '']; })}
+                    className="text-xs text-blue-600"
+                  >
+                    Add
+                  </button>
+                )}
               </div>
             </div>
-          </div>
+          </section>
 
           {/* Honors */}
-          <div className="mb-4">
-            <div className="flex items-start mb-2">
-              <div className="w-1 bg-blue-500 mr-3 flex-shrink-0" style={{ minHeight: '18px' }}></div>
-              <div className="flex-1">
-                <SectionHeader 
-                  sectionKey="honors"
-                  onAddItem={() => addItem('honors')}
+          <section className="mb-4">
+            <h2 className="text-base font-semibold text-blue-600 tracking-wide mb-1">Honors</h2>
+            {data.honors.map((h, i) => (
+              <div key={i} className="flex items-start mb-1.5">
+                <Input
+                  value={h.title}
+                  onChange={(v) => setField((d) => { d.honors[i].title = v; })}
+                  className="text-gray-700 flex-1 mr-3 text-sm"
                 />
-                {data.honors.map((honor, index) => (
-                  <div key={index} className="flex justify-between items-start mb-1.5">
-                    <EditableText
-                      value={honor.title}
-                      onChange={(value) => handleInputChange('honors', 'title', value, index)}
-                      className="text-gray-700 flex-1 mr-3 text-sm leading-snug"
-                    />
-                    <EditableText
-                      value={honor.year}
-                      onChange={(value) => handleInputChange('honors', 'year', value, index)}
-                      className="text-gray-600 text-xs font-medium mr-2"
-                    />
-                    <DeleteButton onClick={() => removeItem('honors', index)} />
-                  </div>
-                ))}
+                <Input
+                  value={h.year}
+                  onChange={(v) => setField((d) => { d.honors[i].year = v; })}
+                  className="text-gray-600 text-xs w-20"
+                />
+                {isEditing && (
+                  <button
+                    onClick={() => setField((d) => { d.honors = d.honors.filter((_, j) => j !== i); })}
+                    className="ml-2 text-xs text-red-600"
+                  >
+                    Remove
+                  </button>
+                )}
               </div>
-            </div>
-          </div>
+            ))}
+            {isEditing && (
+              <button
+                onClick={() => setField((d) => { d.honors = [...d.honors, { title: '', year: '' }]; })}
+                className="text-xs text-blue-600"
+              >
+                Add
+              </button>
+            )}
+          </section>
 
           {/* Research */}
-          <div className="mb-4">
-            <div className="flex items-start mb-2">
-              <div className="w-1 bg-blue-500 mr-3 flex-shrink-0" style={{ minHeight: '18px' }}></div>
-              <div className="flex-1">
-                <SectionHeader 
-                  sectionKey="research"
-                  onAddItem={() => addItem('research')}
+          <section className="mb-4">
+            <h2 className="text-base font-semibold text-blue-600 tracking-wide mb-1">Research</h2>
+            {data.research.map((r, i) => (
+              <div key={i} className="mb-2">
+                <Input
+                  value={r.title}
+                  onChange={(v) => setField((d) => { d.research[i].title = v; })}
+                  className="font-semibold text-gray-800 block text-sm mb-1"
                 />
-                {data.research.map((item, index) => (
-                  <div key={index} className="mb-2.5">
-                    <div className="flex items-start">
-                      <div className="flex-1">
-                        <EditableText
-                          value={item.title}
-                          onChange={(value) => handleInputChange('research', 'title', value, index)}
-                          className="font-semibold text-gray-800 block mb-1 text-sm leading-snug"
-                        />
-                        {item.description && (
-                          <EditableText
-                            value={item.description}
-                            onChange={(value) => handleInputChange('research', 'description', value, index)}
-                            className="text-gray-700 text-sm leading-snug"
-                          />
-                        )}
-                      </div>
-                      <DeleteButton onClick={() => removeItem('research', index)} />
-                    </div>
-                  </div>
-                ))}
+                <Input
+                  value={r.description}
+                  onChange={(v) => setField((d) => { d.research[i].description = v; })}
+                  className="text-gray-700 text-sm"
+                  multiline
+                />
+                {isEditing && (
+                  <button
+                    onClick={() => setField((d) => { d.research = d.research.filter((_, j) => j !== i); })}
+                    className="mt-1 text-xs text-red-600"
+                  >
+                    Remove
+                  </button>
+                )}
               </div>
-            </div>
-          </div>
+            ))}
+            {isEditing && (
+              <button
+                onClick={() => setField((d) => { d.research = [...d.research, { title: '', description: '' }]; })}
+                className="text-xs text-blue-600"
+              >
+                Add
+              </button>
+            )}
+          </section>
 
           {/* Projects */}
-          <div className="mb-4">
-            <div className="flex items-start mb-2">
-              <div className="w-1 bg-blue-500 mr-3 flex-shrink-0" style={{ minHeight: '18px' }}></div>
-              <div className="flex-1">
-                <SectionHeader 
-                  sectionKey="projects"
-                  onAddItem={() => addItem('projects')}
+          <section className="mb-4">
+            <h2 className="text-base font-semibold text-blue-600 tracking-wide mb-1">Projects</h2>
+            {data.projects.map((p, i) => (
+              <div key={i} className="mb-2">
+                <Input
+                  value={p.title}
+                  onChange={(v) => setField((d) => { d.projects[i].title = v; })}
+                  className="font-semibold text-gray-800 block text-sm mb-1"
                 />
-                {data.projects.map((project, index) => (
-                  <div key={index} className="mb-2.5">
-                    <div className="flex items-start">
-                      <div className="flex-1">
-                        <EditableText
-                          value={project.title}
-                          onChange={(value) => handleInputChange('projects', 'title', value, index)}
-                          className="font-semibold text-gray-800 block text-sm leading-snug mb-1"
-                        />
-                        <EditableText
-                          value={project.description}
-                          onChange={(value) => handleInputChange('projects', 'description', value, index)}
-                          className="text-gray-700 text-sm leading-snug"
-                        />
-                      </div>
-                      <DeleteButton onClick={() => removeItem('projects', index)} />
-                    </div>
-                  </div>
-                ))}
+                <Input
+                  value={p.description}
+                  onChange={(v) => setField((d) => { d.projects[i].description = v; })}
+                  className="text-gray-700 text-sm"
+                  multiline
+                />
+                {isEditing && (
+                  <button
+                    onClick={() => setField((d) => { d.projects = d.projects.filter((_, j) => j !== i); })}
+                    className="mt-1 text-xs text-red-600"
+                  >
+                    Remove
+                  </button>
+                )}
               </div>
-            </div>
-          </div>
+            ))}
+            {isEditing && (
+              <button
+                onClick={() => setField((d) => { d.projects = [...d.projects, { title: '', description: '' }]; })}
+                className="text-xs text-blue-600"
+              >
+                Add
+              </button>
+            )}
+          </section>
 
           {/* Skills */}
-          <div className="mb-4">
-            <div className="flex items-start mb-2">
-              <div className="w-1 bg-blue-500 mr-3 flex-shrink-0" style={{ minHeight: '18px' }}></div>
-              <div className="flex-1">
-                <SectionHeader sectionKey="skills" />
-                <div className="space-y-1.5">
-                  <div className="flex items-start">
-                    <span className="font-bold text-gray-800 text-sm mr-1">•</span>
-                    <div className="flex-1">
-                      <div className="flex items-center mb-0.5">
-                        {isEditing ? (
-                          <EditableText
-                            value={getSectionTitle('skillsTechnical')}
-                            onChange={(value) => handleSectionTitleChange('skillsTechnical', value)}
-                            className="font-semibold text-gray-800 text-sm mr-2"
-                          />
-                        ) : (
-                          <span className="font-semibold text-gray-800 text-sm mr-2">{getSectionTitle('skillsTechnical')}</span>
-                        )}
-                        {isEditing && (
-                          <button
-                            onClick={() => addSkillItem('technical')}
-                            className="text-blue-500 hover:text-blue-700 ml-2"
-                          >
-                            <Plus size={14} />
-                          </button>
-                        )}
-                      </div>
-                      <div className="flex flex-wrap gap-1">
-                        {data.skills.technical.map((skill, index) => (
-                          <div key={index} className="flex items-center">
-                            <EditableText
-                              value={skill}
-                              onChange={(value) => handleInputChange('skills', 'technical', value, index)}
-                              className="text-gray-700 text-sm"
-                            />
-                            {isEditing && (
-                              <DeleteButton onClick={() => removeSkillItem('technical', index)} />
-                            )}
-                            {index < data.skills.technical.length - 1 && <span className="text-gray-500 ml-1">, </span>}
-                          </div>
-                        ))}
-                      </div>
+          <section className="mb-2">
+            <h2 className="text-base font-semibold text-blue-600 tracking-wide mb-1">Skills</h2>
+            {(['technical', 'languages', 'activities'] as const).map((cat) => (
+              <div key={cat} className="mb-1.5">
+                <div className="font-semibold text-gray-800 text-sm mb-0.5 capitalize">{cat}</div>
+                <div className="flex flex-wrap gap-1">
+                  {data.skills[cat].map((s, i) => (
+                    <div key={i} className="flex items-center">
+                      <Input
+                        value={s}
+                        onChange={(v) => setField((d) => { d.skills[cat][i] = v; })}
+                        className="text-gray-700 text-sm"
+                      />
+                      {isEditing && (
+                        <button
+                          onClick={() => setField((d) => { d.skills[cat] = d.skills[cat].filter((_, j) => j !== i); })}
+                          className="ml-1 text-xs text-red-600"
+                        >
+                          Remove
+                        </button>
+                      )}
+                      {i < data.skills[cat].length - 1 && <span className="text-gray-500 ml-1">,</span>}
                     </div>
-                  </div>
-                  <div className="flex items-start">
-                    <span className="font-bold text-gray-800 text-sm mr-1">•</span>
-                    <div className="flex-1">
-                      <div className="flex items-center mb-0.5">
-                        {isEditing ? (
-                          <EditableText
-                            value={getSectionTitle('skillsLanguages')}
-                            onChange={(value) => handleSectionTitleChange('skillsLanguages', value)}
-                            className="font-semibold text-gray-800 text-sm mr-2"
-                          />
-                        ) : (
-                          <span className="font-semibold text-gray-800 text-sm mr-2">{getSectionTitle('skillsLanguages')}</span>
-                        )}
-                        {isEditing && (
-                          <button
-                            onClick={() => addSkillItem('languages')}
-                            className="text-blue-500 hover:text-blue-700 ml-2"
-                          >
-                            <Plus size={14} />
-                          </button>
-                        )}
-                      </div>
-                      <div className="flex flex-wrap gap-1">
-                        {data.skills.languages.map((lang, index) => (
-                          <div key={index} className="flex items-center">
-                            <EditableText
-                              value={lang}
-                              onChange={(value) => handleInputChange('skills', 'languages', value, index)}
-                              className="text-gray-700 text-sm"
-                            />
-                            {isEditing && (
-                              <DeleteButton onClick={() => removeSkillItem('languages', index)} />
-                            )}
-                            {index < data.skills.languages.length - 1 && <span className="text-gray-500 ml-1">, </span>}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-start">
-                    <span className="font-bold text-gray-800 text-sm mr-1">•</span>
-                    <div className="flex-1">
-                      <div className="flex items-center mb-0.5">
-                        {isEditing ? (
-                          <EditableText
-                            value={getSectionTitle('skillsActivities')}
-                            onChange={(value) => handleSectionTitleChange('skillsActivities', value)}
-                            className="font-semibold text-gray-800 text-sm mr-2"
-                          />
-                        ) : (
-                          <span className="font-semibold text-gray-800 text-sm mr-2">{getSectionTitle('skillsActivities')}</span>
-                        )}
-                        {isEditing && (
-                          <button
-                            onClick={() => addSkillItem('activities')}
-                            className="text-blue-500 hover:text-blue-700 ml-2"
-                          >
-                            <Plus size={14} />
-                          </button>
-                        )}
-                      </div>
-                      <div className="flex flex-wrap gap-1">
-                        {data.skills.activities.map((activity, index) => (
-                          <div key={index} className="flex items-center">
-                            <EditableText
-                              value={activity}
-                              onChange={(value) => handleInputChange('skills', 'activities', value, index)}
-                              className="text-gray-700 text-sm"
-                            />
-                            {isEditing && (
-                              <DeleteButton onClick={() => removeSkillItem('activities', index)} />
-                            )}
-                            {index < data.skills.activities.length - 1 && <span className="text-gray-500 ml-1">, </span>}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+                  ))}
                 </div>
+                {isEditing && (
+                  <button
+                    onClick={() => setField((d) => { d.skills[cat] = [...d.skills[cat], '']; })}
+                    className="mt-1 text-xs text-blue-600"
+                  >
+                    Add
+                  </button>
+                )}
               </div>
-            </div>
-          </div>
+            ))}
+          </section>
         </div>
       </div>
     );

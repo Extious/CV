@@ -1,10 +1,9 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import { LanguageProvider } from '@/contexts/LanguageContext'
 
 export const metadata: Metadata = {
   title: 'Extious - Online Resume',
-  description: 'Interactive online resume with multilingual support',
+  description: 'Interactive online resume with export features',
 }
 
 export default function RootLayout({
@@ -15,9 +14,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <LanguageProvider>
-          {children}
-        </LanguageProvider>
+        {children}
       </body>
     </html>
   )
