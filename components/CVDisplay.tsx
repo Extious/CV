@@ -182,22 +182,22 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
       className?: string;
     }) => {
       return (
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-2">
           {isEditing ? (
             <EditableText
               value={getSectionTitle(sectionKey)}
               onChange={(value) => handleSectionTitleChange(sectionKey, value)}
-              className={`text-xl font-bold text-blue-600 uppercase tracking-wide ${className}`}
+              className={`text-base font-semibold text-blue-600 tracking-wide ${className}`}
             />
           ) : (
-            <h2 className={`text-xl font-bold text-blue-600 uppercase tracking-wide ${className}`}>
+            <h2 className={`text-base font-semibold text-blue-600 tracking-wide ${className}`}>
               {getSectionTitle(sectionKey)}
             </h2>
           )}
           {isEditing && onAddItem && (
             <button
               onClick={onAddItem}
-              className="flex items-center text-sm text-blue-600 hover:text-blue-800 border border-blue-600 hover:border-blue-800 rounded px-2 py-1 transition-colors"
+              className="flex items-center text-xs text-blue-600 hover:text-blue-800 border border-blue-600 hover:border-blue-800 rounded px-1.5 py-0.5 transition-colors"
             >
               <Plus className="w-3 h-3 mr-1" />
               添加
@@ -227,74 +227,20 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
         className="w-full max-w-[800px] mx-auto bg-white shadow-lg print:shadow-none" 
         style={{ 
           fontFamily: 'Arial, sans-serif', 
-          fontSize: '14px',
-          lineHeight: '1.5'
+          fontSize: '13px',
+          lineHeight: '1.4'
         }}
       >
-        {/* Header with blue gradient background */}
-        <div 
-          className="relative" 
-          style={{ 
-            minHeight: '160px', 
-            background: 'linear-gradient(135deg, #4F9CF9 0%, #3B82F6 100%)' 
-          }}
-        >
-          {/* Title and avatar area */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center pt-4 pb-10">
-            {isEditing ? (
-              <EditableText
-                value={data.resumeTitle || ''}
-                onChange={(value) => handleInputChange('resumeTitle' as any, '', value)}
-                className="text-white text-2xl font-bold mb-1"
-              />
-            ) : (
-              <h1 className="text-white text-2xl font-bold mb-1">{data.resumeTitle}</h1>
-            )}
-            {isEditing ? (
-              <EditableText
-                value={data.resumeSubtitle || ''}
-                onChange={(value) => handleInputChange('resumeSubtitle' as any, '', value)}
-                className="text-blue-50 text-sm"
-              />
-            ) : (
-              !!data.resumeSubtitle && (
-                <div className="text-blue-50 text-sm">{data.resumeSubtitle}</div>
-              )
-            )}
-          </div>
-
-          {/* Avatar positioned in the center bottom of header */}
-          <div 
-            className="absolute left-1/2 transform -translate-x-1/2"
-            style={{ bottom: '-40px' }}
-          >
-            <div 
-              className="w-20 h-20 rounded-full border-4 border-white flex items-center justify-center overflow-hidden" 
-              style={{ backgroundColor: '#40E0D0' }}
-            >
-              {data.personalInfo.avatar ? (
-                <img 
-                  src={data.personalInfo.avatar} 
-                  alt="Avatar" 
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-16 h-16 bg-gray-600 rounded-full"></div>
-              )}
-            </div>
-          </div>
-        </div>
-
         {/* Main content */}
-        <div className="pt-12 px-6 pb-5">
+        <div className="px-4 py-4">
           {/* Name and Contact */}
-          <div className="text-center mb-6">
+          <div className="text-center mb-4">
             <EditableText
               value={data.personalInfo.name}
               onChange={(value) => handleInputChange('personalInfo', 'name', value)}
-              className="text-2xl font-bold text-gray-800 mb-4 block"
+              className="text-xl font-bold text-gray-800 mb-2 block"
             />
-            <div className="text-sm text-gray-600 space-y-1">
+            <div className="text-sm text-gray-600 space-y-0.5">
               <div className="flex justify-center items-center space-x-1">
                 <span>📞</span>
                 <EditableText
@@ -321,57 +267,57 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
           </div>
 
           {/* Objective */}
-          <div className="mb-6">
-            <div className="flex items-start mb-3">
-              <div className="w-1 bg-blue-500 mr-4 flex-shrink-0" style={{ minHeight: '24px' }}></div>
+          <div className="mb-4">
+            <div className="flex items-start mb-2">
+              <div className="w-1 bg-blue-500 mr-3 flex-shrink-0" style={{ minHeight: '18px' }}></div>
               <div className="flex-1">
                 <SectionHeader sectionKey="objective" />
                 <EditableText
                   value={data.objective}
                   onChange={(value) => handleInputChange('objective', '', value)}
-                  className="text-gray-700 text-sm leading-relaxed"
+                  className="text-gray-700 text-sm leading-snug"
                 />
               </div>
             </div>
           </div>
 
           {/* Education */}
-          <div className="mb-6">
-            <div className="flex items-start mb-3">
-              <div className="w-1 bg-blue-500 mr-4 flex-shrink-0" style={{ minHeight: '24px' }}></div>
+          <div className="mb-4">
+            <div className="flex items-start mb-2">
+              <div className="w-1 bg-blue-500 mr-3 flex-shrink-0" style={{ minHeight: '18px' }}></div>
               <div className="flex-1">
                 <SectionHeader 
                   sectionKey="education"
                   onAddItem={addEducationDetail}
                 />
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <EditableText
                     value={data.education.school}
                     onChange={(value) => handleInputChange('education', 'school', value)}
-                    className="font-bold text-gray-800 block text-base"
+                    className="font-semibold text-gray-800 block text-sm"
                   />
                   <EditableText
                     value={data.education.degree}
                     onChange={(value) => handleInputChange('education', 'degree', value)}
-                    className="text-gray-700 block text-sm leading-relaxed"
+                    className="text-gray-700 block text-sm leading-snug"
                   />
                   <EditableText
                     value={data.education.period}
                     onChange={(value) => handleInputChange('education', 'period', value)}
-                    className="text-gray-600 text-sm block leading-relaxed"
+                    className="text-gray-600 text-xs block leading-snug"
                   />
                   <EditableText
                     value={data.education.gpa}
                     onChange={(value) => handleInputChange('education', 'gpa', value)}
                     className="text-gray-700 block text-sm font-medium"
                   />
-                  <div className="space-y-1 mt-2">
+                  <div className="space-y-1 mt-1">
                     {data.education.details.map((detail, index) => (
                       <div key={index} className="flex items-start">
                         <EditableText
                           value={detail}
                           onChange={(value) => handleInputChange('education', 'details', value, index)}
-                          className="text-gray-600 text-sm block leading-relaxed pl-2 flex-1"
+                          className="text-gray-600 text-sm block leading-snug pl-2 flex-1"
                         />
                         <DeleteButton onClick={() => removeEducationDetail(0, index)} />
                       </div>
@@ -383,25 +329,25 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
           </div>
 
           {/* Honors */}
-          <div className="mb-6">
-            <div className="flex items-start mb-3">
-              <div className="w-1 bg-blue-500 mr-4 flex-shrink-0" style={{ minHeight: '24px' }}></div>
+          <div className="mb-4">
+            <div className="flex items-start mb-2">
+              <div className="w-1 bg-blue-500 mr-3 flex-shrink-0" style={{ minHeight: '18px' }}></div>
               <div className="flex-1">
                 <SectionHeader 
                   sectionKey="honors"
                   onAddItem={() => addItem('honors')}
                 />
                 {data.honors.map((honor, index) => (
-                  <div key={index} className="flex justify-between items-start mb-2">
+                  <div key={index} className="flex justify-between items-start mb-1.5">
                     <EditableText
                       value={honor.title}
                       onChange={(value) => handleInputChange('honors', 'title', value, index)}
-                      className="text-gray-700 flex-1 mr-4 text-sm leading-relaxed"
+                      className="text-gray-700 flex-1 mr-3 text-sm leading-snug"
                     />
                     <EditableText
                       value={honor.year}
                       onChange={(value) => handleInputChange('honors', 'year', value, index)}
-                      className="text-gray-600 text-sm font-medium mr-2"
+                      className="text-gray-600 text-xs font-medium mr-2"
                     />
                     <DeleteButton onClick={() => removeItem('honors', index)} />
                   </div>
@@ -411,28 +357,28 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
           </div>
 
           {/* Research */}
-          <div className="mb-6">
-            <div className="flex items-start mb-3">
-              <div className="w-1 bg-blue-500 mr-4 flex-shrink-0" style={{ minHeight: '24px' }}></div>
+          <div className="mb-4">
+            <div className="flex items-start mb-2">
+              <div className="w-1 bg-blue-500 mr-3 flex-shrink-0" style={{ minHeight: '18px' }}></div>
               <div className="flex-1">
                 <SectionHeader 
                   sectionKey="research"
                   onAddItem={() => addItem('research')}
                 />
                 {data.research.map((item, index) => (
-                  <div key={index} className="mb-4">
+                  <div key={index} className="mb-2.5">
                     <div className="flex items-start">
                       <div className="flex-1">
                         <EditableText
                           value={item.title}
                           onChange={(value) => handleInputChange('research', 'title', value, index)}
-                          className="font-bold text-gray-800 block mb-2 text-sm leading-relaxed"
+                          className="font-semibold text-gray-800 block mb-1 text-sm leading-snug"
                         />
                         {item.description && (
                           <EditableText
                             value={item.description}
                             onChange={(value) => handleInputChange('research', 'description', value, index)}
-                            className="text-gray-700 text-sm leading-relaxed"
+                            className="text-gray-700 text-sm leading-snug"
                           />
                         )}
                       </div>
@@ -445,27 +391,27 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
           </div>
 
           {/* Projects */}
-          <div className="mb-6">
-            <div className="flex items-start mb-3">
-              <div className="w-1 bg-blue-500 mr-4 flex-shrink-0" style={{ minHeight: '24px' }}></div>
+          <div className="mb-4">
+            <div className="flex items-start mb-2">
+              <div className="w-1 bg-blue-500 mr-3 flex-shrink-0" style={{ minHeight: '18px' }}></div>
               <div className="flex-1">
                 <SectionHeader 
                   sectionKey="projects"
                   onAddItem={() => addItem('projects')}
                 />
                 {data.projects.map((project, index) => (
-                  <div key={index} className="mb-4">
+                  <div key={index} className="mb-2.5">
                     <div className="flex items-start">
                       <div className="flex-1">
                         <EditableText
                           value={project.title}
                           onChange={(value) => handleInputChange('projects', 'title', value, index)}
-                          className="font-bold text-gray-800 block text-sm leading-relaxed mb-2"
+                          className="font-semibold text-gray-800 block text-sm leading-snug mb-1"
                         />
                         <EditableText
                           value={project.description}
                           onChange={(value) => handleInputChange('projects', 'description', value, index)}
-                          className="text-gray-700 text-sm leading-relaxed"
+                          className="text-gray-700 text-sm leading-snug"
                         />
                       </div>
                       <DeleteButton onClick={() => removeItem('projects', index)} />
@@ -477,24 +423,24 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
           </div>
 
           {/* Skills */}
-          <div className="mb-6">
-            <div className="flex items-start mb-3">
-              <div className="w-1 bg-blue-500 mr-4 flex-shrink-0" style={{ minHeight: '24px' }}></div>
+          <div className="mb-4">
+            <div className="flex items-start mb-2">
+              <div className="w-1 bg-blue-500 mr-3 flex-shrink-0" style={{ minHeight: '18px' }}></div>
               <div className="flex-1">
                 <SectionHeader sectionKey="skills" />
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <div className="flex items-start">
                     <span className="font-bold text-gray-800 text-sm mr-1">•</span>
                     <div className="flex-1">
-                      <div className="flex items-center mb-1">
+                      <div className="flex items-center mb-0.5">
                         {isEditing ? (
                           <EditableText
                             value={getSectionTitle('skillsTechnical')}
                             onChange={(value) => handleSectionTitleChange('skillsTechnical', value)}
-                            className="font-bold text-gray-800 text-sm mr-2"
+                            className="font-semibold text-gray-800 text-sm mr-2"
                           />
                         ) : (
-                          <span className="font-bold text-gray-800 text-sm mr-2">{getSectionTitle('skillsTechnical')}</span>
+                          <span className="font-semibold text-gray-800 text-sm mr-2">{getSectionTitle('skillsTechnical')}</span>
                         )}
                         {isEditing && (
                           <button
@@ -525,15 +471,15 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
                   <div className="flex items-start">
                     <span className="font-bold text-gray-800 text-sm mr-1">•</span>
                     <div className="flex-1">
-                      <div className="flex items-center mb-1">
+                      <div className="flex items-center mb-0.5">
                         {isEditing ? (
                           <EditableText
                             value={getSectionTitle('skillsLanguages')}
                             onChange={(value) => handleSectionTitleChange('skillsLanguages', value)}
-                            className="font-bold text-gray-800 text-sm mr-2"
+                            className="font-semibold text-gray-800 text-sm mr-2"
                           />
                         ) : (
-                          <span className="font-bold text-gray-800 text-sm mr-2">{getSectionTitle('skillsLanguages')}</span>
+                          <span className="font-semibold text-gray-800 text-sm mr-2">{getSectionTitle('skillsLanguages')}</span>
                         )}
                         {isEditing && (
                           <button
@@ -564,15 +510,15 @@ const CVDisplay = forwardRef<HTMLDivElement, CVDisplayProps>(
                   <div className="flex items-start">
                     <span className="font-bold text-gray-800 text-sm mr-1">•</span>
                     <div className="flex-1">
-                      <div className="flex items-center mb-1">
+                      <div className="flex items-center mb-0.5">
                         {isEditing ? (
                           <EditableText
                             value={getSectionTitle('skillsActivities')}
                             onChange={(value) => handleSectionTitleChange('skillsActivities', value)}
-                            className="font-bold text-gray-800 text-sm mr-2"
+                            className="font-semibold text-gray-800 text-sm mr-2"
                           />
                         ) : (
-                          <span className="font-bold text-gray-800 text-sm mr-2">{getSectionTitle('skillsActivities')}</span>
+                          <span className="font-semibold text-gray-800 text-sm mr-2">{getSectionTitle('skillsActivities')}</span>
                         )}
                         {isEditing && (
                           <button

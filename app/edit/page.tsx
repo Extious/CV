@@ -45,25 +45,25 @@ export default function EditPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar title={data.resumeTitle} />
+      <Navbar />
       
-      <main className="py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <main className="py-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
           {/* Action Buttons */}
-          <div className="flex justify-end space-x-4 mb-6">
+          <div className="flex justify-end space-x-3 mb-4">
             <button
               onClick={handleReset}
-              className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+              className="flex items-center px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
             >
-              <RotateCcw className="w-4 h-4 mr-2" />
+              <RotateCcw className="w-3.5 h-3.5 mr-1.5" />
               {t('actions.cancel')}
             </button>
             
             <button
               onClick={handleSave}
-              className="flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
+              className="flex items-center px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
             >
-              <Save className="w-4 h-4 mr-2" />
+              <Save className="w-3.5 h-3.5 mr-1.5" />
               {t('actions.save')}
             </button>
           </div>
